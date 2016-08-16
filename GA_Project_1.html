@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GA || Profile</title>
+	<script src="https://use.fontawesome.com/2ae980122e.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100|Lato|Oswald" rel="stylesheet">
+	<style>
+
+		*, 
+		*:before,
+		*:after {
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			height: 100vh;
+			width: 100vw;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			font-family: 'Lato', 'Oswald', Sans-serif;
+			color: #fff;
+			background: #252323;
+			overflow: hidden;
+		}
+
+		.container {
+			position: relative;
+			text-align: center;
+		}
+
+		.container,
+		.backdrop {
+			height: 100%;
+			width: 100%;
+		}
+
+		.bgblur {
+			opacity: 0;
+			background: url(http://i1378.photobucket.com/albums/ah88/mjv123/nordblur_zpsu3v6b1ss.jpeg);
+		}
+
+		.bgclear {
+			background: url(http://i1378.photobucket.com/albums/ah88/mjv123/nordnonblur_zpsycq1n1ms.jpeg);
+		}
+
+		.backdrop {
+			position: absolute;
+			top: 0;
+			left: 0;
+			background-size: cover;
+			background-position: center;
+			transform: scale(1.2);
+			transition: all 1.2s;
+		}
+
+		.switch .backdrop {
+			transform: scale(1);
+		}
+
+		.switch .bgblur {
+			opacity: 1;
+		}
+
+		.content {
+			position: absolute;
+			top: 40%;
+			left: 50%;
+			width: 80%;
+			transform: translate(-50%, -50%);
+			z-index: 999;
+			padding: 50px;
+		}
+
+		.profile {
+			position: relative;
+			width: 150px;
+			height: 150px;
+			margin: 0 auto 20px;
+			background: #000029;
+			border-radius: 50%;
+		}
+
+		.tint {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			background: #000029;
+			border-radius: 50%;
+			opacity: 0.3;
+		}
+
+		.content img {
+			width: 100%;
+			border-radius: 50%;
+			border: 2px solid #fff;
+		}
+
+		.profile,
+		.content > h1,
+		.content > p {
+			transition: opacity 1.2s;
+		}
+
+		.switch .profile,
+		.switch .content > h1,
+		.switch .content > p {
+			opacity: 0.3;
+		}
+
+		.content h1 {
+			font-family: 'Roboto', sans-serif;
+			font-size: 3em;
+			font-weight: 300;
+		}
+
+		.content > p {
+			margin-top: 20px;
+			font-size: 1.6em;
+		}
+
+		/* rotating sign-up box idea from thecodeplayer.com */
+
+		#cuboid {
+			width: 300px;
+			margin: 40px auto;
+			perspective: 1000px;
+		}
+
+		#cuboid form {
+			transform: translateZ(-20px);
+			transform-style: preserve-3d;
+			height: 40px;
+			transition: all 0.35s;
+		}
+
+		.cuboid-text {
+			line-height: 40px;
+			height: 40px;
+			background: #000029;
+		}
+
+		.loader {
+			background: #010f3c;
+			animation: phase 1s infinite;
+		}
+
+		@keyframes phase {
+			50% {
+				background: #;
+				color: #010f3c;
+			}
+		}
+
+		#email {
+			background: #fff;
+			outline: none;
+			border: 0 none;
+			font: inherit;
+			text-align: left;
+			color: #000029;
+			display: block;
+			width: 100%;
+			padding: 0 10px;
+		}
+
+		#submit {
+			display: none;
+		}
+
+		.submit-icon,
+		.reset-icon {
+			position: absolute;
+			top: 0;
+			right: 0;
+			color: rgba(1, 15, 60, 0.25);
+			line-height: 40px;
+			padding: 0 10px;
+			transition: all 0.5s;
+			cursor: pointer;
+		}
+
+		.submit-icon.active {
+			color: #252323;
+		}
+
+		.reset-icon {
+			color: rgba(255, 255, 255, 0.25);
+			font-size: 14px;
+		}
+
+		#cuboid div {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+		}
+
+		#cuboid div:nth-child(1) {
+			transform: rotateX(0deg) translateZ(20px);
+		}
+
+		#cuboid div:nth-child(2) {
+			transform: rotateX(-90deg) translateZ(20px);
+		}
+
+		#cuboid div:nth-child(3) {
+			transform: rotateX(-180deg) translateZ(20px);
+		}
+
+		#cuboid div:nth-child(4) {
+			transform: rotateX(-270deg) translateZ(20px);
+		}
+
+		#cuboid form:hover,
+		#cuboid form.ready {
+			transform: translateZ(-20px) rotateX(90deg);
+		}
+
+		#cuboid form.loading {
+			transform: translateZ(-20px) rotateX(180deg);
+		}
+
+		#cuboid form.complete {
+			transform: translateZ(-20px) rotateX(270deg);
+		}
+
+		.social {
+			position: fixed;
+			bottom: 30px;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 2.5em;
+			z-index: 999;
+		}
+
+		.social a {
+			position: relative;
+			color: #fff;
+			padding: 10px;
+			transition: color 0.5s, opacity 1.2s;
+			cursor: pointer;
+		}
+
+		.social a:hover {
+			color: #82bce2;
+		}
+
+		.social a::before {
+			content: 'twitter';
+			position: absolute;
+			top: -90px;
+			left: -14px;
+			height: 80px;
+			width: 80px;
+			line-height: 80px;
+			background: #82bce2;
+			font-size: 16px;
+			color: #000029;
+			border-radius: 50%;
+		}
+
+		.social a:nth-child(2)::before {
+			content: 'linked-in';
+		}
+
+		.social a:nth-child(3)::before {
+			content: 'github';
+		}
+
+		.social a::after {
+			content: '';
+			position: absolute;
+			top: -12px;
+			left: 20px;
+			height: 0;
+			width: 0;
+			border-width: 6px;
+			border-style: solid;
+			border-color: transparent;
+			border-top: 22px solid #82bce2;
+		}
+
+		.social a::before,
+		.social a::after {
+			transform: rotateY(90deg);
+			opacity: 0;
+			transition: all 0.5s;
+		}
+
+		.social a:hover::before,
+		.social a:hover::after {
+			transform: rotateY(0deg);
+			opacity: 1;
+		}
+
+		.switch a {
+			opacity: 0.3;
+		}
+
+		.overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: #030733;
+			opacity: 0;
+			transition: opacity 1.2s;
+		}
+
+		.switch .overlay {
+			opacity: 0.5;
+		}
+
+		@media screen and (max-width: 700px) {
+			.content {
+				padding: 50px 0;
+			}
+
+			.content h1 {
+				font-family: 'Roboto', sans-serif;
+				font-size: 2em;
+				font-weight: 300;
+			}
+
+			.content > p {
+				margin-top: 20px;
+				font-size: 1.2em;
+			}
+		}
+
+		@media screen and (max-width: 450px) {
+			.content h1 {
+				font-size: 1.8em;
+			}
+
+			.profile {
+				width: 120px;
+				height: 120px;
+			}
+		}
+
+		@media screen and (max-height: 540px) {
+			.social a::before,
+			.social a::after {
+				display: none;
+			}
+		}
+
+	</style>
+</head>	
+<body>
+	<div class="container">
+		<div class="backdrop bgclear"></div>
+		<div class="backdrop bgblur"></div>
+		<div>
+			<div class='content'>
+				<div class="profile">
+					<div class="tint"></div>
+					<img src="http://i1378.photobucket.com/albums/ah88/mjv123/nordicfur_zps8crvutbr.jpg" alt="profile-img">
+				</div>
+				<h1>Nils Erik Nordenskjold</h1>
+				<p>Hej! Tack för att besöka! Låt oss hålla kontakten...</p>
+
+				<div id="cuboid">
+					<form action="#">
+						<div>
+							<p class="cuboid-text">Prenumerera</p>
+						</div>
+						<div>
+							<label for="submit" class="submit-icon">
+								<i class="fa fa-chevron-right"></i>
+							</label>
+							<input type="text" id="email" class="cuboid-text" placeholder="Din E-post" autocomplete="off" />
+							<input type="submit" id="submit"/>
+						</div>
+						<div>
+							<p class="cuboid-text loader">bara ett ögonblick...</p>
+						</div>
+						<div>
+							<span class="reset-icon"><i class="fa fa-refresh"></i></span>
+							<p class="cuboid-text">Tack, jag ska bli i kontakt!</p>
+						</div>
+					</form>
+				</div>
+
+			</div> <!-- content -->
+			
+			<div class='social'><a href="#" class='twitter'><i class="fa fa-twitter-square"></i></a><a href="#" class='linked-in'><i class="fa fa-linkedin-square"></i></a><a href="#" class='github'><i class="fa fa-github-square"></i></a></div>
+		
+		</div>			
+
+	</div> <!-- container -->
+	<div class="overlay"></div>
+	<script>
+
+		$("#email").focus(function(){
+			$("#cuboid form").addClass("ready");
+			$("body").addClass("switch");
+		});
+
+		$("#email").blur(function(){
+			if($(this).val()=='') {
+				$("#cuboid form").removeClass("ready");
+				$("body").removeClass("switch");
+			}
+		});
+
+		$('#email').keyup(function(){
+			$(".submit-icon").toggleClass("active", $(this).val().length > 0);
+		});
+
+		$("#cuboid form").submit(function(){
+			if($("#email").val()==''){
+				return;
+			} else {
+				$(this).removeClass("ready").addClass("loading");
+				setTimeout(complete, 3000);
+			}	
+		});
+
+		function complete() {
+			$("#cuboid form").removeClass("loading").addClass("complete");
+			$("#email").val("");
+			if($(".submit-icon").hasClass("active")) {($(".submit-icon").removeClass("active"))}
+			$("body").removeClass("switch");
+		}
+
+		$(".reset-icon").click(function() {
+			$("#cuboid form").removeClass("complete");
+		})
+
+		Array.prototype.slice.call(document.getElementsByTagName('a')).forEach(function(el){
+			el.onclick = function(){
+				console.log(this);
+				return false;
+			}
+		})
+
+	</script>
+</body>
+</html>
